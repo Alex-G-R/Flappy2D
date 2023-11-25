@@ -160,7 +160,6 @@ int main(int argc, char const *argv[])
 				Obstacle newB(1500, window_height - tempY + 130, 100, 720);
 				obstacles.push_back(newT);
 				obstacles.push_back(newB);
-				std::cout << obstacles.size() << std::endl;
 			}
 		}
 
