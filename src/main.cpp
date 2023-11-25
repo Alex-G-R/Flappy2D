@@ -1,6 +1,7 @@
 // Liblaries
 #include <SDL2/SDL.h>
 #include <iostream>
+#include <vector>
 
 // Mine files
 #include "Flappy.hpp"
@@ -29,6 +30,21 @@ int main(int argc, char const *argv[])
 						static_cast<int>(player.height)
 					};
 
+	std::vector<SDL_Rect> obstacles;
+
+	SDL_Rect top1;
+	top1.x = 250;
+	top1.y = 0;
+	top1.w = 100;
+	top1.h = 200;
+	obstacles.push_back(top1);
+
+	SDL_Rect bottom1;
+    bottom1.x = 250;
+    bottom1.y = window_height - 200;
+    bottom1.w = 100;
+    bottom1.h = 200;
+    obstacles.push_back(bottom1);
 
 	// Game loop
 	bool running = true;
@@ -68,6 +84,10 @@ int main(int argc, char const *argv[])
 						static_cast<int>(player.height)
 					};
 
+		for(auto& obstacle : obstacles) {
+			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+			SDL_RenderFillRect(renderer, &obstacle);
+		}
 
 		SDL_RenderPresent(renderer);
 		SDL_Delay(10);
