@@ -11,6 +11,12 @@ const int window_height = 720;
 const float deltaTime = 0.1;
 const float gravity = 1.2f;
 
+struct Obstacle {
+    SDL_Rect rect;
+    bool repositioned;
+    Obstacle(int x, int y, int w, int h) : rect{x, y, w, h}, repositioned(false) {}
+};
+
 int main(int argc, char const *argv[])
 {
 	// Setup SDL, SDL_Event and window
@@ -30,21 +36,47 @@ int main(int argc, char const *argv[])
 						static_cast<int>(player.height)
 					};
 
-	std::vector<SDL_Rect> obstacles;
+	std::vector<Obstacle> obstacles;
 
-	SDL_Rect top1;
-	top1.x = 250;
-	top1.y = 0;
-	top1.w = 100;
-	top1.h = 200;
+	Obstacle top1(250, 0, 100, 200);
+	Obstacle bottom1(250, window_height - 200, 100, 200);
 	obstacles.push_back(top1);
+	obstacles.push_back(bottom1);
 
-	SDL_Rect bottom1;
-    bottom1.x = 250;
-    bottom1.y = window_height - 200;
-    bottom1.w = 100;
-    bottom1.h = 200;
-    obstacles.push_back(bottom1);
+	Obstacle top2(450, 0, 100, 200);
+	Obstacle bottom2(450, window_height - 200, 100, 200);
+	obstacles.push_back(top2);
+	obstacles.push_back(bottom2);
+
+	Obstacle top3(650, 0, 100, 200);
+	Obstacle bottom3(650, window_height - 200, 100, 200);
+	obstacles.push_back(top3);
+	obstacles.push_back(bottom3);
+
+	Obstacle top4(850, 0, 100, 200);
+	Obstacle bottom4(850, window_height - 200, 100, 200);
+	obstacles.push_back(top4);
+	obstacles.push_back(bottom4);
+
+	Obstacle top5(1050, 0, 100, 200);
+	Obstacle bottom5(1050, window_height - 200, 100, 200);
+	obstacles.push_back(top5);
+	obstacles.push_back(bottom5);
+
+	Obstacle top6(1250, 0, 100, 200);
+	Obstacle bottom6(1250, window_height - 200, 100, 200);
+	obstacles.push_back(top6);
+	obstacles.push_back(bottom6);
+
+	Obstacle top7(1450, 0, 100, 200);
+	Obstacle bottom7(1450, window_height - 200, 100, 200);
+	obstacles.push_back(top7);
+	obstacles.push_back(bottom7);
+
+	Obstacle top8(1650, 0, 100, 200);
+	Obstacle bottom8(1650, window_height - 200, 100, 200);
+	obstacles.push_back(top8);
+	obstacles.push_back(bottom8);
 
 	// Game loop
 	bool running = true;
@@ -52,17 +84,22 @@ int main(int argc, char const *argv[])
 	{
 		while(SDL_PollEvent(&event))
 		{
-			if(event.type == SDL_QUIT)
+			if(event.type == SDL_QUIT){
 				running = false;
-
-			if(event.type == SDL_KEYUP)
+			}
+			else if(event.type == SDL_KEYUP)
 			{
 				switch(event.key.keysym.sym)
 				{
 					case SDLK_SPACE:
-						std::cout << "Space bar released" << std::endl;
 						player.flap();
 						break;
+				}
+			}
+			else if(event.type == SDL_MOUSEBUTTONUP)
+			{
+				if(event.button.button == SDL_BUTTON_LEFT){
+					player.flap();
 				}
 			}
 		}
@@ -71,6 +108,24 @@ int main(int argc, char const *argv[])
 		SDL_SetRenderDrawColor(renderer, 45, 44, 43, 255);
 		SDL_RenderClear(renderer);
 
+	
+		for (auto& obstacle : obstacles) {
+		    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+		    SDL_RenderFillRect(renderer, &obstacle.rect);
+
+
+		    obstacle.rect.x -= 1;
+
+		    if (obstacle.rect.x + obstacle.rect.w < 0 && !obstacle.repositioned) {
+
+		        obstacles.erase(obstacles.begin());
+
+		        Obstacle newT(1500, 0, 100, 200);
+				Obstacle newB(1500, window_height - 200, 100, 200);
+				obstacles.push_back(newT);
+				obstacles.push_back(newB);
+			}
+		}
 
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 		SDL_RenderFillRect(renderer, &playerR);
@@ -84,13 +139,9 @@ int main(int argc, char const *argv[])
 						static_cast<int>(player.height)
 					};
 
-		for(auto& obstacle : obstacles) {
-			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-			SDL_RenderFillRect(renderer, &obstacle);
-		}
-
 		SDL_RenderPresent(renderer);
-		SDL_Delay(10);
+
+		SDL_Delay(16);
 	}
 
 	// Free up the memory
